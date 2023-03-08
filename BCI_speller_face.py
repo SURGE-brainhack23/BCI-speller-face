@@ -89,18 +89,18 @@ else:
 # Initialize parallel port
 # data is the value of the TTL trigger code you want to send
 # here we initialize the port to 0, just in case
-data = 0
+triggerCode = 0
 
 if triggerMode == 'parallel':
     p_port = parallel.ParallelPort(address='0x4FF8')
-    p_port.setData(data)
+    p_port.setData(triggerCode)
 elif triggerMode == 'usb':
     import UniversalLibrary as UL
     board = 0
     port = UL.FIRSTPORTA
     direction = UL.DIGITALOUT
     UL.cbDConfigPort(board, port, direction)
-    UL.cbDOut(board, port, data)
+    UL.cbDOut(board, port, triggerCode)
     
 endExpNow = False  # flag for 'escape' or other condition => quit the exp
 frameTolerance = 0.001  # how close to onset before 'same' frame
