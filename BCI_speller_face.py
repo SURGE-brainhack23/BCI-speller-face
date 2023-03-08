@@ -22,6 +22,7 @@ from pathlib import Path
 
 ###############################################################################
 testMode = True #'timingTest'  # options are True, False, or 'timingTest' (note the last has to be in quotes, but True and False should not be)
+triggerMode = None  # options are parallel, usb, None
 
 colourTheme = 'dark'
 frameRate = 144  # should read this from the computer itself, but may not be reliable w multiple monitors
@@ -84,6 +85,23 @@ else:
     fullScreen = True
     mouseVis = False
 
+#############################
+# Initialize parallel port
+# data is the value of the TTL trigger code you want to send
+# here we initialize the port to 0, just in case
+data = 0
+
+if triggerMode == 'parallel':
+    p_port = parallel.ParallelPort(address='0x4FF8')
+    p_port.setData(data)
+elif triggerMode = 'usb':
+    import UniversalLibrary as UL
+    board = 0
+    port = UL.FIRSTPORTA
+    direction = UL.DIGITALOUT
+    UL.cbDConfigPort(board, port, direction)
+    UL.cbDOut(board, port, data)
+    
 endExpNow = False  # flag for 'escape' or other condition => quit the exp
 frameTolerance = 0.001  # how close to onset before 'same' frame
 
@@ -169,10 +187,7 @@ def checkEmpty(text):
         return False
 
 
-#############################
-# Initialize parallel port
-p_port = parallel.ParallelPort(address='0x4FF8')
-p_port.setData(0)
+
 
 
 ###########################################################
@@ -399,7 +414,11 @@ thisExp.addLoop(conditions)  # add the loop to the experiment
 for thisCondition in conditions:
     # currentLoop = conditions
     # send condition code to EEG amp
-    p_port.setData(int(thisCondition['conditionCode']))
+    if triggerMode == 'parallel':
+        p_port.setData(int(thisCondition['conditionCode']))
+    elif triggerMode = 'usb':    
+        UL.cbDOut(board, port, int(thisCondition['conditionCode']))
+
 
     # preload images for this condition
     imgList = {}
@@ -449,7 +468,10 @@ for thisCondition in conditions:
         
         # --- Run Routine "targetIdentification" ---
         while continueRoutine and routineTimer.getTime() < highlightDuration:
-            p_port.setData(0)
+            if triggerMode == 'parallel':
+                p_port.setData(0)
+            elif triggerMode = 'usb':    
+                UL.cbDOut(board, port, 0)
             # get current time
             t = routineTimer.getTime()
             tThisFlip = win.getFutureFlipTime(clock=routineTimer)
@@ -490,8 +512,11 @@ for thisCondition in conditions:
                 targetIdentification.setAutoDraw(True)
                 
                 # Send trigger code indicationg target location
-                p_port.setData(thisTarget['targetCode'])
-                
+                if triggerMode == 'parallel':
+                    p_port.setData(thisTarget['targetCode'])
+                elif triggerMode = 'usb':    
+                    UL.cbDOut(board, port, int(thisCondition['targetCode']))
+
             if targetIdentification.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
                 if tThisFlipGlobal > targetIdentification.tStartRefresh + highlightDuration - frameTolerance:
@@ -580,8 +605,11 @@ for thisCondition in conditions:
             # --- Run Routine "trial" ---
             while continueRoutine and routineTimer.getTime() < trialDuration:
                 # reset par port
-                p_port.setData(0)
-                                
+                if triggerMode == 'parallel':
+                    p_port.setData(0)
+                elif triggerMode = 'usb':    
+                    UL.cbDOut(board, port, 0)
+                    
                 # get current time
                 t = routineTimer.getTime()
                 tThisFlip = win.getFutureFlipTime(clock=routineTimer)
@@ -622,8 +650,11 @@ for thisCondition in conditions:
                     rowColHighlight.setAutoDraw(True)
                     
                     # send code to EEG saying rowColHighlight occurred, and its location
-                    p_port.setData(thisTrial['rowColCode'])
-                    
+                    if triggerMode == 'parallel':
+                        p_port.setData(thisTrial['rowColCode'])
+                    elif triggerMode = 'usb':    
+                        UL.cbDOut(board, port, int(thisCondition['rowColCode']))
+                        
                 if rowColHighlight.status == STARTED:
                     # is it time to stop? (based on global clock, using actual start)
                     if tThisFlipGlobal > rowColHighlight.tStartRefresh + rowColHighlightDuration - frameTolerance:
@@ -658,7 +689,10 @@ for thisCondition in conditions:
             for thisComponent in trialComponents:
                 if hasattr(thisComponent, "setAutoDraw"):
                     thisComponent.setAutoDraw(False)
-            p_port.setData(0)
+            if triggerMode == 'parallel':
+                p_port.setData(0)
+            elif triggerMode = 'usb':    
+                UL.cbDOut(board, port, 0)                
             # if par_port_rowcol.status == STARTED:
             #     win.callOnFlip(par_port_rowcol.setData, int(0))
             # using non-slip timing so subtract the expected duration of this Routine (unless ended on request)
