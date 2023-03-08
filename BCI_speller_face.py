@@ -94,7 +94,7 @@ data = 0
 if triggerMode == 'parallel':
     p_port = parallel.ParallelPort(address='0x4FF8')
     p_port.setData(data)
-elif triggerMode = 'usb':
+elif triggerMode == 'usb':
     import UniversalLibrary as UL
     board = 0
     port = UL.FIRSTPORTA
@@ -416,7 +416,7 @@ for thisCondition in conditions:
     # send condition code to EEG amp
     if triggerMode == 'parallel':
         p_port.setData(int(thisCondition['conditionCode']))
-    elif triggerMode = 'usb':    
+    elif triggerMode == 'usb':    
         UL.cbDOut(board, port, int(thisCondition['conditionCode']))
 
 
@@ -470,7 +470,7 @@ for thisCondition in conditions:
         while continueRoutine and routineTimer.getTime() < highlightDuration:
             if triggerMode == 'parallel':
                 p_port.setData(0)
-            elif triggerMode = 'usb':    
+            elif triggerMode == 'usb':    
                 UL.cbDOut(board, port, 0)
             # get current time
             t = routineTimer.getTime()
@@ -514,7 +514,7 @@ for thisCondition in conditions:
                 # Send trigger code indicationg target location
                 if triggerMode == 'parallel':
                     p_port.setData(thisTarget['targetCode'])
-                elif triggerMode = 'usb':    
+                elif triggerMode == 'usb':    
                     UL.cbDOut(board, port, int(thisCondition['targetCode']))
 
             if targetIdentification.status == STARTED:
@@ -607,7 +607,7 @@ for thisCondition in conditions:
                 # reset par port
                 if triggerMode == 'parallel':
                     p_port.setData(0)
-                elif triggerMode = 'usb':    
+                elif triggerMode == 'usb':    
                     UL.cbDOut(board, port, 0)
                     
                 # get current time
@@ -652,7 +652,7 @@ for thisCondition in conditions:
                     # send code to EEG saying rowColHighlight occurred, and its location
                     if triggerMode == 'parallel':
                         p_port.setData(thisTrial['rowColCode'])
-                    elif triggerMode = 'usb':    
+                    elif triggerMode == 'usb':    
                         UL.cbDOut(board, port, int(thisCondition['rowColCode']))
                         
                 if rowColHighlight.status == STARTED:
@@ -691,7 +691,7 @@ for thisCondition in conditions:
                     thisComponent.setAutoDraw(False)
             if triggerMode == 'parallel':
                 p_port.setData(0)
-            elif triggerMode = 'usb':    
+            elif triggerMode == 'usb':    
                 UL.cbDOut(board, port, 0)                
             # if par_port_rowcol.status == STARTED:
             #     win.callOnFlip(par_port_rowcol.setData, int(0))
