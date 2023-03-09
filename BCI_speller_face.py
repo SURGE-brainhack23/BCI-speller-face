@@ -21,8 +21,8 @@ from glob import glob
 from pathlib import Path
 
 ###############################################################################
-testMode = True #'timingTest'  # options are True, False, or 'timingTest' (note the last has to be in quotes, but True and False should not be)
-triggerMode = None  # options are parallel, usb, None
+testMode = False #'timingTest'  # options are True, False, or 'timingTest' (note the last has to be in quotes, but True and False should not be)
+triggerMode = 'usb'  # options are parallel, usb, None
 
 colourTheme = 'dark'
 frameRate = 144  # should read this from the computer itself, but may not be reliable w multiple monitors
@@ -515,7 +515,7 @@ for thisCondition in conditions:
                 if triggerMode == 'parallel':
                     p_port.setData(thisTarget['targetCode'])
                 elif triggerMode == 'usb':    
-                    UL.cbDOut(board, port, int(thisCondition['targetCode']))
+                    UL.cbDOut(board, port, int(thisTarget['targetCode']))
 
             if targetIdentification.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
@@ -653,7 +653,7 @@ for thisCondition in conditions:
                     if triggerMode == 'parallel':
                         p_port.setData(thisTrial['rowColCode'])
                     elif triggerMode == 'usb':    
-                        UL.cbDOut(board, port, int(thisCondition['rowColCode']))
+                        UL.cbDOut(board, port, int(thisTrial['rowColCode']))
                         
                 if rowColHighlight.status == STARTED:
                     # is it time to stop? (based on global clock, using actual start)
